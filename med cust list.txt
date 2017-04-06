@@ -1,0 +1,54 @@
+# Med Custom List Help
+
+Field # Description Example  
+1 NDCNUM NDC number 
+2 PRODUCTNAME brand drug name 
+3 DOSEFORM form of the drug; for example, TABS, SUPP 
+4 STRENGTH The concentration of the drug 
+5 GENERICNAME Generic drug name 
+6 AWPUNIT  
+7 QUANTITY Default quantity to order 
+8 REFILLS # of refills 
+9 DEFAULTSIG Default instructions 
+10 GPI The therapeutic drug class code 
+11 GENERICMED  
+12 DDID The unique ID for this medication, strength and dose form 
+13 KDC  
+14 LEGEND  
+15 MEDDID  
+16 DAW Dispense as written flag 
+
+# MEL_ADD_MEDICATION
+
+MEL_ADD_MEDICATION 
+
+MEL_ADD_MEDICATION(description,instruction,onset date,ID,end date,quantity,refills,BMN indicator,medication comment,Diagnosis Codes,Diagnosis Code Descriptions,PrintDx,RxNorm)
+	description Required. Description of the medication product formulation, typically product name + strength + dose form.
+	instruction Required. Instructions for taking the medication, including amount, frequency, duration, timing.
+ 	onset_date Required. Start date for the medication. Must be in MM/DD/YYYY date format. If ._TODAYSDATE is used, it must be used with the str function.
+ 	ID Required. ID number of the medication.
+		If ID is less than a 9-digit string, then ID is treated as a DDID code. Medication is added only if the DDID number is valid and found in the medication tables. The description that is added to the patient's medication list is based on a lookup of this ID.
+		If ID is an 11-digit string, then ID is treated as a National Drug Council product ID code (NDCNUM). The DDID is then determined by lookup. Medication is added only if the ID number is valid. This is an acceptable alternative to the DDID. If the ID is an NCDNUM, the value used must be surrounded by quotes ("). For example, {MEL_ADD_MEDICATION("MENTHOL (TOPICAL ANALGESIC) GEL","od","03/01/2012","81485025001","", 1,2,"","Wash your hands before and after using this medication","","",False)}
+		The application includes only a single NDC representative for each DDID. Because most valid NDC codes will not be found, the DDID is more reliable.
+	end_date Required. The date the medication was terminated. Must be in MM/DD/YYYY date format.
+ 	quantity Required. The number or amount of the medication to dispense.
+ 	refills Required. The number of refills to dispense.
+ 	BMN Optional.
+		Y- This prescription requires a brand medically necessary medication.
+		N- This prescription is not designated as a BMN.
+		If this parameter is null or blank, the prescription is not designated as a BMN.
+	medication comment Required. General comment (up to 2000 characters) about the medication, not the prescription.
+ 	diagnosis codes Optional. A pipe (|) delimited list of diagnosis codes associated with this order. ICD codes are prefaced with either ICD- (ICD-9) or ICD10- (ICD-10). 
+	diagnosis code descriptions Optional. A pipe (|) delimited list of diagnosis descriptions associated with this medication. If the DIAGNOSIS CODES argument is used, the DIAGNOSIS CODE DESCRIPTIONS argument cannot be blank. The number of items in the codes list must match the number of items in the code descriptions list.  
+	PrintDx Optional. True if the diagnosis should be printed on printed prescriptions, False otherwise. This field is evaluated only if Diagnosis Codes are provided. If Diagnosis Codes are provided, and PrintDx is not specified, the current user’s preference for Default Print Dx will be used. 
+	RxNorm Optional. RxNorm value for the medication.
+
+ 
+
+
+
+{fn ABX() {local d=str(._TODAYSDATE) e=ADDDATES(d,"0","0","14")
+MEL_ADD_MEDICATION("SULFAMETHOXAZOLE-TRIMETHOPRIM 800-160 MG ORAL TABS","one pill by mouth twice daily for three days",d,"31474",e,"6","0")
+OBSNOW("MISC ANTIBX","sulfa",d)
+return "Will treat with TMP-sulfa 800-160 mg twice daily for three days."}}
+{ABX()}
