@@ -1,4 +1,4 @@
-# Med Custom List Help
+# Med Cust List 
 
 Field # Description Example  
 1 NDCNUM NDC number 
@@ -19,8 +19,6 @@ Field # Description Example
 16 DAW Dispense as written flag 
 
 # MEL_ADD_MEDICATION
-
-MEL_ADD_MEDICATION 
 
 MEL_ADD_MEDICATION(description,instruction,onset date,ID,end date,quantity,refills,BMN indicator,medication comment,Diagnosis Codes,Diagnosis Code Descriptions,PrintDx,RxNorm)
 	description Required. Description of the medication product formulation, typically product name + strength + dose form.
@@ -43,12 +41,22 @@ MEL_ADD_MEDICATION(description,instruction,onset date,ID,end date,quantity,refil
 	PrintDx Optional. True if the diagnosis should be printed on printed prescriptions, False otherwise. This field is evaluated only if Diagnosis Codes are provided. If Diagnosis Codes are provided, and PrintDx is not specified, the current user’s preference for Default Print Dx will be used. 
 	RxNorm Optional. RxNorm value for the medication.
 
- 
 
-
+FCN Medication Prescription Quicktext 
 
 {fn ABX() {local d=str(._TODAYSDATE) e=ADDDATES(d,"0","0","14")
 MEL_ADD_MEDICATION("SULFAMETHOXAZOLE-TRIMETHOPRIM 800-160 MG ORAL TABS","one pill by mouth twice daily for three days",d,"31474",e,"6","0")
 OBSNOW("MISC ANTIBX","sulfa",d)
 return "Will treat with TMP-sulfa 800-160 mg twice daily for three days."}}
 {ABX()}
+
+{fn Norco() {local d=str(._TODAYSDATE) e=ADDDATES(d,"0","0","14")
+MEL_ADD_MEDICATION("HYDROCODONE-ACETAMINOPHEN 5-325 MG TABS","Take 1 tablet by mouth every 4 hours as needed for pain.  May be sedating.",d,"79777",e,"30","0")
+return "Will treat with Hydrocodone/Acetaminophen for acute pain."}}
+{Norco()}
+
+{fn triamcinolone() {local d=str(._TODAYSDATE) e=ADDDATES(d,"0","0","30")
+MEL_ADD_MEDICATION("TRIAMCINOLONE ACETONIDE 0.1 % CREAM","Apply three times a day to rash. Do not use on face",d,"22077",e,"15","0")
+return "Will treat with Hydrocodone/Acetaminophen for acute pain."}}
+{triamcinolone()}
+
